@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * wedos.php
+ *
+ * Laravel for Wedos preparation utility.
+ *
+ * @author     Jakub Vaněk
+ * @copyright  2017 Jakub Vaněk
+ * @license    https://github.com/vanekj/laravel-wedos/blob/master/LICENSE  MIT
+ * @version    1.0.0
+ * @link       https://github.com/vanekj/laravel-wedos
+ */
+
 ob_start();
 
 /**
