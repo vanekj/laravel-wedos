@@ -29,7 +29,7 @@ Thanks to Jaroslav Klimčík for his article about [Running Laravel on Wedos sha
    - /bootstrap/cache - 777
 6. Go to your website and navigate to `/wedos.php`
 7. Check if inputs are prefilled with values
-8. Hit start
+8. Hit "Start"
 9. If everything went successfully, you should see Laravels start screen
 
 ## License
