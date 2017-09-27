@@ -19,8 +19,8 @@ Thanks to Jaroslav Klimčík for his article about [Running Laravel on Wedos sha
    $ composer create-project --prefer-dist laravel/laravel website
    ```
 
-2. Download `wedos.php` file from [here](https://raw.githubusercontent.com/vanekj/laravel-wedos/master/src/wedos.php)
-3. Place `wedos.php` file in Laravels root folder (where `.env` and other files are located)
+2. Download `wedos.php`
+3. Place it in Laravels root folder (where `.env` and other files are located)
 4. Upload all files to your webhosting
 5. Set right permissions to folders and files (FileZilla recommended)
    - All folders - 755
