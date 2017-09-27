@@ -54,7 +54,7 @@ function updatePublicHtaccess() {
 	$file = getPublicFolderPath() . '/.htaccess';
 
 	$content = file_get_contents($file);
-	$content = preg_replace('/<IfModule mod_negotiation\.c>\s+Options -MultiViews -Indexes\s+<\/IfModule>\s+/', '', $content);
+	$content = preg_replace('/\s+<IfModule mod_negotiation\.c>\s+Options(?:\s-MultiViews)?(?:\s-Indexes)?\s+<\/IfModule>/', '', $content);
 
 	file_put_contents($file, $content);
 	chmod($file, 0644);
@@ -167,14 +167,14 @@ function reload() {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
-	// Create root .htaccess file
-	createRootHtaccess();
+	// Update config file
+	updateAppConfig($_POST);
 
 	// Update "public" .htaccess file
 	updatePublicHtaccess();
 
-	// Update config file
-	updateAppConfig($_POST);
+	// Create root .htaccess file
+	createRootHtaccess();
 
 	// Remove files
 	removeFiles();
@@ -228,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 								<label for="<?=$option['key']?>"><?=$option['key']?></label>
 							</td>
 							<td valign="middle" class="form-item -input">
-								<input type="text" name="<?=$option['key']?>" id="<?=$option['key']?>" value="<?=$option['value']?>" />
+								<input type="text" name="<?=$option['key']?>" id="<?=$option['key']?>" value="<?=$option['value']?>" autocomplete="off" />
 							</td>
 						</tr>
 						<?php endforeach; ?>
