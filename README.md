@@ -4,6 +4,8 @@ Laravel preparation script for Wedos shared webhosting which edits some Laravel 
 
 Thanks to Jaroslav Klimčík for his article about [Running Laravel on Wedos shared webhosting](http://laravelblog.cz/spusteni-laravelu-na-sdilenem-hostingu-wedos/).
 
+I am open to all suggestions about the code improvement (functionality, style, etc.) :)
+
 ## How to use
 
 1. Make fresh Laravel installation (you have two options)
