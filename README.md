@@ -1,4 +1,4 @@
-## Laravel for wedos
+## Laravel for Wedos
 
 Laravel preparation script for Wedos shared webhosting which edits some Laravel files in order to work properly on Wedos shared webhosting service.
 
