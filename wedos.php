@@ -8,7 +8,7 @@
  * @author     Jakub Vaněk
  * @copyright  2017 Jakub Vaněk
  * @license    MIT
- * @version    2.0.0
+ * @version    2.1.0
  * @link       https://github.com/vanekj/laravel-wedos
  */
 
@@ -277,6 +277,9 @@ class Wedos
 		// Update root .htaccess
 		self::rootHtaccess();
 
+		// Set correct permissions to folders and files
+		self::repairChmod();
+
 		// Clean the files
 		self::cleanup();
 
@@ -388,6 +391,54 @@ class Wedos
 	}
 
 	/**
+	 * Repair file and folders permissions
+	 *
+	 * @return void
+	 */
+	public static function repairChmod()
+	{
+		self::rchmod();
+		self::rchmod(self::$root_path . '/storage', 0777);
+		self::rchmod(self::$root_path . '/bootstrap/cache', 0777);
+	}
+
+	/**
+	 * Recursively set directory and files chmod
+	 *
+	 * @param  string   $start_dir   Root dir where to start recursion
+	 * @param  integer  $dir_perms   Directory permissions
+	 * @param  integer  $file_perms  File permissions
+	 * @return void
+	 */
+	private static function rchmod($start_dir = '', $dir_perms = 0755, $file_perms = 0644)
+	{
+		$start_dir = strlen($start_dir) === 0 ? self::$root_path : $start_dir;
+
+		if (is_dir($start_dir)) {
+			if (substr(sprintf('%o', fileperms($start_dir)), -4) !== $dir_perms) {
+				chmod($start_dir, $dir_perms);
+			}
+
+			$cd = opendir($start_dir);
+
+			while (($file = readdir($cd)) !== false) {
+				if ($file === '.' || $file === '..') continue;
+
+				$path = "$start_dir/$file";
+
+				if (is_dir($path)) {
+					chmod($path, $dir_perms);
+					self::rchmod($path);
+				} else {
+					chmod($path, $file_perms);
+				}
+			}
+
+			closedir($cd);
+		}
+	}
+
+	/**
 	 * Update config options by given values
 	 *
 	 * @param  array  $post  Post data object
@@ -461,15 +512,12 @@ class Wedos
 	}
 
 	/**
-	 * Remove unwanted files and deactivate this script
+	 * Deactivate this script
 	 *
 	 * @return void
 	 */
 	private static function cleanup()
 	{
-		unlink(self::$root_path . '/.env');
-		unlink(self::$root_path . '/.env.example');
-
 		chmod(self::$root_path . '/wedos.php', 0000);
 	}
 
@@ -492,8 +540,12 @@ Wedos::prepare();
 $options = Wedos::$config_options;
 $env_options = Wedos::$env_options;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
-	Wedos::make($_POST);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	if (isset($_POST['prepare'])) {
+		Wedos::make($_POST);
+	} else if (isset($_POST['repair-chmod'])) {
+		Wedos::repairChmod();
+	}
 }
 
 ?>
@@ -581,7 +633,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 					<tfoot>
 						<tr>
 							<td colspan="3" class="form-item -submit" align="center">
-								<input class="submit" type="submit" name="submit" value="Start" />
+								<input class="submit" type="submit" name="prepare" value="Start" />
 							</td>
 						</tr>
 					</tfoot>
@@ -590,6 +642,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
 		<?php else: ?>
 			<p>Error, please make sure you have a fresh Laravel installation and try again.</p>
 		<?php endif; ?>
+
+		<div class="actions">
+			<hr />
+			<form action="" method="POST">
+				<input class="submit" type="submit" name="repair-chmod" value="Repair folder and file permissions" />
+			</form>
+		</div>
 
 		<div class="footer">
 			<hr />
